@@ -1,4 +1,4 @@
-import { Equal, Expect } from "../helpers/type-utils";
+import { Equal, Expect } from '../helpers/type-utils';
 
 interface Example {
   name: string;
@@ -8,7 +8,12 @@ interface Example {
   groupId: string;
 }
 
-type OnlyIdKeys<T> = unknown;
+type typeWhichMustContainId = `${string}${'id' | 'Id'}${string}`;
+
+type OnlyIdKeys<T> = {
+  // [property in keyof T as property extends typeWhichMustContainId ? property : never]: T[property];
+  [property in keyof T as Extract<property, typeWhichMustContainId>]: T[property];
+};
 
 type tests = [
   Expect<
@@ -21,5 +26,5 @@ type tests = [
       }
     >
   >,
-  Expect<Equal<OnlyIdKeys<{}>, {}>>
+  Expect<Equal<OnlyIdKeys<{}>, {}>>,
 ];
